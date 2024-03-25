@@ -1,15 +1,18 @@
-package com.alibou.security.auth;
+package com.bem.security.auth;
 
-import com.alibou.security.config.JwtService;
-import com.alibou.security.user.Role;
-import com.alibou.security.user.User;
-import com.alibou.security.user.UserRepository;
+import com.bem.security.config.JwtService;
+import com.bem.security.user.Role;
+import com.bem.security.user.User;
+import com.bem.security.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +28,7 @@ public class AuthenticationService {
                 .firstName(request.getFirstname())
                 .lastName(request.getLastname())
                 .email(request.getEmail())
-                .role(Role.USER)
+                .role(request.getRole())
                 .passWord(passwordEncoder.encode(request.getPassword()))
                 .build();
         userRepository.save(user);
@@ -50,5 +53,9 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .build();
+    }
+
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
+
     }
 }

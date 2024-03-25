@@ -1,6 +1,5 @@
-package com.alibou.security.user;
+package com.bem.security.user;
 
-import antlr.collections.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
