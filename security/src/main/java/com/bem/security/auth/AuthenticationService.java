@@ -39,12 +39,16 @@ public class AuthenticationService {
                 .role(request.getRole())
                 .passWord(passwordEncoder.encode(request.getPassword()))
                 .build();
-        userRepository.save(user);
+
+        User savedUser  = userRepository.save(user);
 
         String jwtToken = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
 
+        saveUserToken(savedUser, jwtToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -57,9 +61,14 @@ public class AuthenticationService {
                 .orElseThrow(() -> new UsernameNotFoundException("user not found"));
 
         String jwtToken = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
 
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
